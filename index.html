@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게임 회사 취업 준비생 시뮬레이터</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 상단 스탯 바 -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-label">
+                    <span class="stat-icon">🧠</span>
+                    <span class="stat-text">정신력</span>
+                </div>
+                <div class="stat-bar-container">
+                    <div class="stat-bar" id="mental-bar">
+                        <div class="stat-fill" id="mental-fill"></div>
+                    </div>
+                    <div class="stat-value" id="mental-value">50</div>
+                </div>
+                <div class="stat-arrow" id="mental-arrow"></div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-label">
+                    <span class="stat-icon">💰</span>
+                    <span class="stat-text">재정</span>
+                </div>
+                <div class="stat-bar-container">
+                    <div class="stat-bar" id="finance-bar">
+                        <div class="stat-fill" id="finance-fill"></div>
+                    </div>
+                    <div class="stat-value" id="finance-value">50</div>
+                </div>
+                <div class="stat-arrow" id="finance-arrow"></div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-label">
+                    <span class="stat-icon">⚡</span>
+                    <span class="stat-text">역량</span>
+                </div>
+                <div class="stat-bar-container">
+                    <div class="stat-bar" id="ability-bar">
+                        <div class="stat-fill" id="ability-fill"></div>
+                    </div>
+                    <div class="stat-value" id="ability-value">50</div>
+                </div>
+                <div class="stat-arrow" id="ability-arrow"></div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-label">
+                    <span class="stat-icon">💪</span>
+                    <span class="stat-text">자신감</span>
+                </div>
+                <div class="stat-bar-container">
+                    <div class="stat-bar" id="confidence-bar">
+                        <div class="stat-fill" id="confidence-fill"></div>
+                    </div>
+                    <div class="stat-value" id="confidence-value">50</div>
+                </div>
+                <div class="stat-arrow" id="confidence-arrow"></div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-label">
+                    <span class="stat-icon">❤️</span>
+                    <span class="stat-text">체력</span>
+                </div>
+                <div class="stat-bar-container">
+                    <div class="stat-bar" id="health-bar">
+                        <div class="stat-fill" id="health-fill"></div>
+                    </div>
+                    <div class="stat-value" id="health-value">50</div>
+                </div>
+                <div class="stat-arrow" id="health-arrow"></div>
+            </div>
+        </div>
+        
+        <!-- 일정 바 -->
+        <div class="schedule-bar">
+            <div class="schedule-container">
+                <div class="schedule-track" id="schedule-track">
+                    <!-- 주차 마커들이 여기에 동적으로 생성됩니다 -->
+                </div>
+                <div class="schedule-labels">
+                    <div class="schedule-label">1주</div>
+                    <div class="schedule-label">22주</div>
+                    <div class="schedule-label">44주</div>
+                    <div class="schedule-label">52주</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 중앙 이벤트 카드 영역 -->
+        <div class="card-container">
+            <!-- 인트로 화면 -->
+            <div class="intro-screen" id="intro-screen">
+                <div class="intro-content">
+                    <h1 class="intro-title">게임 회사 취업 준비생 시뮬레이터</h1>
+                    <div class="intro-subtitle">Game Company Job Seeker Simulator</div>
+                    <div class="intro-description">
+                        <p>게임 회사에 취업하기 위해 노력하는 취업 준비생의 이야기입니다.</p>
+                        <p>5가지 스탯을 균형있게 관리하여 성공적으로 취업하세요!</p>
+                    </div>
+                    <div class="intro-stats">
+                        <div class="intro-stat-item">
+                            <span class="intro-stat-icon">🧠</span>
+                            <span class="intro-stat-name">정신력</span>
+                        </div>
+                        <div class="intro-stat-item">
+                            <span class="intro-stat-icon">💰</span>
+                            <span class="intro-stat-name">재정</span>
+                        </div>
+                        <div class="intro-stat-item">
+                            <span class="intro-stat-icon">⚡</span>
+                            <span class="intro-stat-name">역량</span>
+                        </div>
+                        <div class="intro-stat-item">
+                            <span class="intro-stat-icon">💪</span>
+                            <span class="intro-stat-name">자신감</span>
+                        </div>
+                        <div class="intro-stat-item">
+                            <span class="intro-stat-icon">❤️</span>
+                            <span class="intro-stat-name">체력</span>
+                        </div>
+                    </div>
+                    <div class="intro-controls">
+                        <p>조작법:</p>
+                        <ul>
+                            <li>카드 스와이프 또는 화살표 키로 선택</li>
+                            <li>M키로 음성 피드백 켜기/끄기</li>
+                        </ul>
+                    </div>
+                    <button class="start-button" id="start-button">게임 시작</button>
+                </div>
+            </div>
+            
+            <!-- 게임 카드 (처음에는 숨김) -->
+            <div class="event-card" id="event-card" style="display: none;">
+                <div class="choice-hint left-hint" id="left-hint"></div>
+                <div class="choice-hint right-hint" id="right-hint"></div>
+                
+                <div class="card-content">
+                    <div class="card-image-container">
+                        <img class="card-image" id="card-image" src="" alt="이벤트 이미지">
+                    </div>
+                    <h2 class="card-title" id="card-title">게임 시작</h2>
+                    <p class="card-description" id="card-description">
+                        새로운 도전이 시작됩니다. 당신의 선택이 모든 것을 바꿀 것입니다.
+                    </p>
+                </div>
+                <div class="card-choices">
+                    <div class="choice left-choice" id="left-choice">
+                        <span class="choice-text">좌측 선택</span>
+                        <div class="choice-hint-stats" id="left-choice-hint">
+                            <div class="choice-hint-stat">
+                                <span class="choice-hint-stat-icon">😰</span>
+                                <span class="choice-hint-stat-value">10</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="choice right-choice" id="right-choice">
+                        <span class="choice-text">우측 선택</span>
+                        <div class="choice-hint-stats" id="right-choice-hint">
+                            <div class="choice-hint-stat">
+                                <span class="choice-hint-stat-icon">💰</span>
+                                <span class="choice-hint-stat-value">15</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 결과 창 (처음에는 숨김) -->
+            <div class="result-card" id="result-card" style="display: none;">
+                <div class="result-content">
+                    <div class="result-image-container" style="display: none;">
+                        <img class="result-image" id="result-image" src="" alt="결과 이미지" style="display: none;">
+                    </div>
+                    <h2 class="result-title" id="result-title">결과</h2>
+                    <p class="result-message" id="result-message">
+                        선택한 결과가 여기에 표시됩니다.
+                    </p>
+                    <div class="result-stats" id="result-stats">
+                        <!-- 스탯 변화가 여기에 표시됩니다 -->
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <button class="confirm-button" id="confirm-button">확인</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 정보 -->
+        <div class="game-info">
+            <div class="turn-counter">나이: <span id="turn-count">25살 (1주차)</span></div>
+            <div class="game-status" id="game-status">게임 진행 중...</div>
+            <div class="audio-controls">
+                <button class="audio-toggle" id="audio-toggle" title="음성 피드백 토글">🔊</button>
+                <button class="bgm-toggle" id="bgm-toggle" title="배경음악 토글">🎵</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
