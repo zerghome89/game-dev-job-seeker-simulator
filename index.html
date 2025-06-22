@@ -82,7 +82,7 @@
         </div>
         
         <!-- 일정 바 -->
-        <div class="schedule-bar">
+        <div class="schedule-bar" id="schedule-bar" style="display: none;">
             <div class="schedule-container">
                 <div class="schedule-track" id="schedule-track">
                     <!-- 주차 마커들이 여기에 동적으로 생성됩니다 -->
@@ -129,7 +129,7 @@
                         </div>
                     </div>
                     <div class="intro-controls">
-                        <p>조작법: 카드 스와이프 또는 화살표 키로 선택</p>
+                        <p>조작법: 카드 스와이프로 선택</p>
                     </div>
                     <button class="start-button" id="start-button">게임 시작</button>
                 </div>
@@ -148,26 +148,6 @@
                     <p class="card-description" id="card-description">
                         새로운 도전이 시작됩니다. 당신의 선택이 모든 것을 바꿀 것입니다.
                     </p>
-                </div>
-                <div class="card-choices">
-                    <div class="choice left-choice" id="left-choice">
-                        <span class="choice-text">좌측 선택</span>
-                        <div class="choice-hint-stats" id="left-choice-hint">
-                            <div class="choice-hint-stat">
-                                <span class="choice-hint-stat-icon">😰</span>
-                                <span class="choice-hint-stat-value">10</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="choice right-choice" id="right-choice">
-                        <span class="choice-text">우측 선택</span>
-                        <div class="choice-hint-stats" id="right-choice-hint">
-                            <div class="choice-hint-stat">
-                                <span class="choice-hint-stat-icon">💰</span>
-                                <span class="choice-hint-stat-value">15</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             

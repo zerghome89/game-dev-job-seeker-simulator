@@ -283,7 +283,7 @@ body {
 }
 
 .event-card:active {
-    cursor: grabbing;
+    cursor: grab;
 }
 
 .event-card.swipe-left {
@@ -512,7 +512,7 @@ body {
     .game-container {
         border-radius: 0;
         height: 100vh;
-        max-height: 100vh;
+        max-width: 100%;
     }
     
     .stats-bar {
@@ -536,15 +536,15 @@ body {
     }
     
     .card-container {
-        padding: 15px 10px;
+        padding: 15px;
     }
     
     .card-content {
-        padding: 20px 15px;
+        padding: 20px;
     }
     
     .card-title {
-        font-size: 18px;
+        font-size: 20px;
     }
     
     .card-description {
@@ -556,7 +556,7 @@ body {
     }
     
     .game-info {
-        padding: 15px;
+        padding: 10px 15px;
     }
     
     .turn-counter {
@@ -565,6 +565,20 @@ body {
     
     .game-status {
         font-size: 12px;
+    }
+    
+    .choice-hint {
+        font-size: 16px;
+        padding: 12px 20px;
+        top: 30px;
+    }
+    
+    .left-hint {
+        right: 20px;
+    }
+    
+    .right-hint {
+        left: 20px;
     }
 }
 
@@ -615,16 +629,21 @@ body {
 .choice-hint {
     position: absolute;
     top: 40px;
-    font-size: 28px;
+    font-size: 16px;
     font-weight: bold;
     border: 4px solid;
-    padding: 10px 20px;
+    padding: 20px 30px;
     border-radius: 15px;
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
     pointer-events: none;
     z-index: 10;
-    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+    min-width: 120px;
+    text-align: center;
 }
 
 .choice-hint.visible {
@@ -634,15 +653,15 @@ body {
 .left-hint {
     right: 30px;
     transform: rotate(15deg);
-    border-color: #e74c3c;
-    color: #e74c3c;
+    border-color: #95a5a6;
+    color: #2c3e50;
 }
 
 .right-hint {
     left: 30px;
     transform: rotate(-15deg);
-    border-color: #27ae60;
-    color: #27ae60;
+    border-color: #95a5a6;
+    color: #2c3e50;
 } 
 
 /* 결과 창 */
@@ -763,32 +782,6 @@ body {
     transform: translateY(0);
 }
 
-/* 모바일 반응형 */
-@media (max-width: 768px) {
-    .result-card {
-        padding: 20px;
-        margin: 10px;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-    
-    .result-title {
-        font-size: 18px;
-    }
-    
-    .result-message {
-        font-size: 14px;
-    }
-    
-    .result-stats {
-        gap: 8px;
-    }
-    
-    .result-stat-item {
-        font-size: 12px;
-    }
-} 
-
 /* 일정 바 */
 .schedule-bar {
     background: linear-gradient(90deg, #34495e, #2c3e50);
@@ -898,4 +891,31 @@ body {
         padding: 2px 6px;
         top: -25px;
     }
+}
+
+.right-hint {
+    left: 20px;
+}
+
+.result-card {
+    padding: 20px;
+    margin: 10px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.result-title {
+    font-size: 18px;
+}
+
+.result-message {
+    font-size: 14px;
+}
+
+.result-stats {
+    gap: 8px;
+}
+
+.result-stat-item {
+    font-size: 12px;
 } 
