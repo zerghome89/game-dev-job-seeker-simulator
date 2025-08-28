@@ -91,7 +91,6 @@
                     <div class="schedule-label">1주</div>
                     <div class="schedule-label">22주</div>
                     <div class="schedule-label">44주</div>
-                    <div class="schedule-label">52주</div>
                 </div>
             </div>
         </div>
@@ -106,32 +105,11 @@
                         <p>게임 회사에 취업하기 위해 노력하는 취업 준비생의 이야기입니다.</p>
                         <p>상단의 5가지 스탯을 <strong>균형 있게 관리</strong>하여 성공적으로 취업하세요!</p>
                     </div>
-                    <div class="intro-stats" style="display: none;">
-                        <div class="intro-stat-item">
-                            <span class="intro-stat-icon">🧠</span>
-                            <span class="intro-stat-name">정신력</span>
-                        </div>
-                        <div class="intro-stat-item">
-                            <span class="intro-stat-icon">💰</span>
-                            <span class="intro-stat-name">재정</span>
-                        </div>
-                        <div class="intro-stat-item">
-                            <span class="intro-stat-icon">⚡</span>
-                            <span class="intro-stat-name">역량</span>
-                        </div>
-                        <div class="intro-stat-item">
-                            <span class="intro-stat-icon">💪</span>
-                            <span class="intro-stat-name">자신감</span>
-                        </div>
-                        <div class="intro-stat-item">
-                            <span class="intro-stat-icon">❤️</span>
-                            <span class="intro-stat-name">체력</span>
-                        </div>
-                    </div>
                     <div class="intro-controls">
                         <p>조작법: 카드 스와이프로 선택</p>
                     </div>
                     <button class="start-button" id="start-button">게임 시작</button>
+                    <button class="leaderboard-button" id="leaderboard-button">리더보드</button>
                 </div>
             </div>
             
@@ -182,6 +160,27 @@
         </div>
     </div>
 
+    <!-- 이름 입력 모달 -->
+    <div class="modal-overlay" id="name-modal-overlay" style="display: none;">
+        <div class="modal" id="name-modal">
+            <h2>게임 종료!</h2>
+            <p>리더보드에 등록할 이름을 입력하세요.</p>
+            <p>최종 점수: <strong id="final-score-display">0</strong>점</p>
+            <input type="text" id="player-name-input" placeholder="이름 (10자 이내)" maxlength="10">
+            <button id="submit-score-button">점수 등록</button>
+        </div>
+    </div>
+
+    <!-- 리더보드 모달 -->
+    <div class="modal-overlay" id="leaderboard-modal-overlay" style="display: none;">
+        <div class="modal" id="leaderboard-modal">
+            <h2>리더보드</h2>
+            <ol id="leaderboard-list"></ol>
+            <button id="close-leaderboard-button">닫기</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
 </body>
-</html> 
+</html>
