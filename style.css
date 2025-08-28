@@ -166,7 +166,7 @@ body {
     background: white;
     border-radius: 20px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    padding: 40px;
+    padding: 30px;
     text-align: center;
     animation: fadeIn 1s ease-in-out;
 }
@@ -174,7 +174,7 @@ body {
 .intro-content {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* 버튼 간 간격 조정 */
+    gap: 15px; /* 버튼 간 간격 조정 */
 }
 
 .intro-title {
@@ -194,7 +194,7 @@ body {
 
 .intro-description {
     color: #555;
-    line-height: 1.6;
+    line-height: 1.3;
 }
 
 .intro-description p {
@@ -230,9 +230,9 @@ body {
 }
 
 .intro-controls {
-    background: #f8f9fa;
+    background: #f0f0f0;
     border-radius: 10px;
-    padding: 20px;
+    padding: 10px;
     text-align: left;
 }
 
