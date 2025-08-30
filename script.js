@@ -1491,7 +1491,7 @@ async function showLeaderboard() {
             .from('score')
             .select('name, score')
             .order('score', { ascending: false })
-            .limit(7);
+            .limit(100);
 
         if (error) {
             throw error;
@@ -1499,7 +1499,7 @@ async function showLeaderboard() {
 
         if (data && data.length > 0) {
             leaderboardList.innerHTML = data.map((entry, index) => 
-                `<li>${index + 1}. ${entry.name} - ${entry.score}점</li>`
+                `<li><span class="rank">${index + 1}.</span><span class="name">${entry.name}</span><span class="score">${entry.score}점</span></li>`
             ).join('');
         } else {
             leaderboardList.innerHTML = '<li>아직 등록된 기록이 없습니다.</li>';
