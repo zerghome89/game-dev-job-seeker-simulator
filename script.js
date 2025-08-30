@@ -18,7 +18,7 @@ class ReignsGame {
         this.gameOver = false;
         this.currentEvent = null;
         this.gameStarted = false;
-        this.recentEvents = []; // 최근 3턴 동안 나온 이벤트 기록
+        this.recentEvents = []; // 최근 10턴 동안 나온 이벤트 기록
         
         // 엔딩 퀘스트 관련 변수들
         this.endingQuestActive = false; // 엔딩 퀘스트 활성화 여부
@@ -408,8 +408,13 @@ class ReignsGame {
         
         const effects = this.currentEvent.effects[choice];
         if (!success) {
-            effects.mental = (effects.mental || 0) - 10;
-            effects.confidence = (effects.confidence || 0) - 10;
+            if (this.endingQuestStep === 1) {
+                effects.mental = (effects.mental || 0) - 5;
+                effects.confidence = (effects.confidence || 0) - 5;
+            } else {
+                effects.mental = (effects.mental || 0) - 15;
+                effects.confidence = (effects.confidence || 0) - 15;
+            }
         }
         
         const randomizedEffects = {};
@@ -472,24 +477,28 @@ class ReignsGame {
     }
     
     handleEndingQuestFailure() {
-        const failedSteps = this.endingQuestResults.filter(result => !result.success).length;
-        const confidenceLoss = failedSteps * 10;
-        this.stats.confidence = Math.max(0, this.stats.confidence - confidenceLoss);
+        const firstFailure = this.endingQuestResults.find(result => !result.success);
         
         this.endingQuestActive = false;
         this.endingQuestStep = 0;
         this.endingQuestResults = [];
         
         const recruitmentType = this.week < 44 ? "상반기" : "하반기";
-        const failureMessages = [
-            `${recruitmentType} 취업시장에서 서류 탈락... 하지만 포기하지 마세요!`,
-            `${recruitmentType} 취업시장에서 1차 면접 탈락... 다음 기회를 노려보세요!`,
-            `${recruitmentType} 취업시장에서 2차 면접 탈락... 더 나은 준비를 해보세요!`,
-            `${recruitmentType} 취업시장에서 여러 단계 탈락... 하지만 계속 도전해보세요!`
-        ];
-        this.gameStatus.textContent = failureMessages[Math.min(failedSteps - 1, failureMessages.length - 1)];
         
-        this.showStatChanges({ confidence: -confidenceLoss });
+        if (firstFailure) {
+            const failureMessages = {
+                1: `${recruitmentType} 취업시장에 지원하지 않았습니다.`,
+                2: `${recruitmentType} 취업시장에서 서류 탈락... 하지만 포기하지 마세요!`,
+                3: `${recruitmentType} 취업시장에서 1차 면접 탈락... 다음 기회를 노려보세요!`,
+                4: `${recruitmentType} 취업시장에서 2차 면접 탈락... 더 나은 준비를 해보세요!`
+            };
+            this.gameStatus.textContent = failureMessages[firstFailure.step];
+        } else {
+            // This case should not happen if we are in handleEndingQuestFailure
+            this.gameStatus.textContent = "일상으로 돌아갑니다.";
+        }
+        
+        this.updateStatsDisplay();
         this.eventCard.style.display = 'block';
         this.loadEvent();
     }
@@ -605,7 +614,7 @@ class ReignsGame {
         this.endingQuestResults = [];
         const recruitmentType = this.week < 44 ? "상반기" : "하반기";
         const successRate = Math.round((this.stats.ability / 100) * 80);
-        this.gameStatus.textContent = `${recruitmentType} 취업시장 시작! 최종 도전에 임합니다. (성공 확률 약 ${successRate}%)`;
+        this.gameStatus.textContent = `${recruitmentType} 취업시장 시작! (매 단계 성공 확률 약 ${successRate}%)`;
         this.loadEndingQuestEvent();
     }
     
@@ -743,8 +752,8 @@ class ReignsGame {
                     right: "다음 기회로 미룬다."
                 },
                 effects: {
-                    left: { ability: 5, mental: -5, finance: -5 },
-                    right: { ability: -3, mental: +5 }
+                    left: { ability: 2, mental: -4, finance: -2 },
+                    right: { ability: -2, mental: 3 }
                 },
                 resultMessages: {
                     left: "포트폴리오 제작을 시작합니다. 실력이 한 단계 성장하는 계기가 될 것입니다.",
@@ -757,12 +766,12 @@ class ReignsGame {
                 image: "images/online.jpg",
                 prob: 2,
                 choices: {
-                    left: "고급 강의 수강",
-                    right: "무료 강의 수강"
+                    left: "고급 강의를 수강한다.",
+                    right: "무료 강의를 수강한다."
                 },
                 effects: {
-                    left: { ability: 8, finance: -10, mental: -5 },
-                    right: { ability: 4 }
+                    left: { ability: 4, finance: -4, mental: -2 },
+                    right: { ability: 2 }
                 },
                 resultMessages: {
                     left: "비용은 들지만, 확실한 실력 향상을 위해 고급 강의를 듣습니다.",
@@ -779,8 +788,8 @@ class ReignsGame {
                     right: "간단한 프로젝트"
                 },
                 effects: {
-                    left: { ability: 8, mental: -10, health: -5 },
-                    right: { ability: 4, mental: -4 }
+                    left: { ability: 4, confidence: 2, health: -4 },
+                    right: { ability: 2, mental: 1 }
                 },
                 resultMessages: {
                     left: "큰 도전을 통해 많은 것을 배우기로 합니다. 힘들겠지만, 그만큼 얻는 것도 많을 겁니다.",
@@ -797,8 +806,8 @@ class ReignsGame {
                     right: "아르바이트를 하지 않는다."
                 },
                 effects: {
-                    left: { finance: 10, mental: -5, ability: -5 },
-                    right: { finance: -5 }
+                    left: { finance: 8, mental: -3, ability: -3, health: -1 },
+                    right: { finance: -3, mental: 2 }
                 },
                 resultMessages: {
                     left: "개발 공부도 중요하지만, 일단은 먹고 살아야 합니다.",
@@ -811,12 +820,12 @@ class ReignsGame {
                 image: "images/interview.jpg",
                 prob: 0.5,
                 choices: {
-                    left: "전문가와 연습",
-                    right: "혼자 연습"
+                    left: "전문가와 연습한다.",
+                    right: "혼자 연습한다."
                 },
                 effects: {
-                    left: { confidence: 8, mental: -10, ability: 8 },
-                    right: { confidence: 3, ability: 3 }
+                    left: { confidence: 4, mental: -3, ability: 2 },
+                    right: { confidence: 2, ability: 1 }
                 },
                 resultMessages: {
                     left: "전문가의 도움을 받아 실전처럼 면접을 준비합니다.",
@@ -824,17 +833,17 @@ class ReignsGame {
                 }
             },
             {
-                title: "게임 잼 참가",
-                description: "게임 잼에 참가하여 실력을 키울 수 있습니다.\n어떻게 하시겠습니까?",
+                title: "게임취업밤 게임잼 참가",
+                description: "게임잼에 참가하여 실력을 키울 수 있습니다.\n어떻게 하시겠습니까?",
                 image: "images/portfolio.jpg",
                 prob: 0.5,
                 choices: {
-                    left: "팀으로 참가",
-                    right: "개인으로 참가"
+                    left: "팀으로 참가한다.",
+                    right: "개인으로 참가한다."
                 },
                 effects: {
-                    left: { ability: 8, mental: -10, confidence: 5 },
-                    right: { ability: 4 }
+                    left: { ability: 4, mental: -5, confidence: 3 },
+                    right: { ability: 2 }
                 },
                 resultMessages: {
                     left: "다른 사람들과 협업하며 시야를 넓히는 기회를 갖습니다.",
@@ -851,8 +860,8 @@ class ReignsGame {
                     right: "가벼운 운동"
                 },
                 effects: {
-                    left: { health: 8, mental: -5 },
-                    right: { health: 4, mental: 2 }
+                    left: { health: 5, mental: -2 },
+                    right: { health: 3, mental: 1 }
                 },
                 resultMessages: {
                     left: "땀을 흘리며 체력을 단련합니다. 건강한 신체에 건강한 정신이 깃듭니다.",
@@ -862,15 +871,15 @@ class ReignsGame {
             {
                 title: "친구와의 만남",
                 description: "친구들과 만나서 스트레스를 해소할 수 있습니다.\n어떻게 하시겠습니까?",
-                image: "images/friend_success.jpg",
+                image: "images/cafe.jpg",
                 prob: 1,
                 choices: {
                     left: "친구들과 만난다.",
                     right: "혼자 시간을 보낸다."
                 },
                 effects: {
-                    left: { mental: 8, finance: -5 },
-                    right: { mental: 3 }
+                    left: { mental: 5, finance: -3 },
+                    right: { mental: 2 }
                 },
                 resultMessages: {
                     left: "친구들과 즐거운 시간을 보내며 재충전합니다.",
@@ -887,8 +896,8 @@ class ReignsGame {
                     right: "무료 멘토링"
                 },
                 effects: {
-                    left: { ability: 8, confidence: 5, finance: -10 },
-                    right: { ability: 4, confidence: 2 }
+                    left: { ability: 4, confidence: 4, finance: -6 },
+                    right: { ability: 2, confidence: 2 }
                 },
                 resultMessages: {
                     left: "현직자의 값진 조언을 얻기 위해 비용을 투자합니다.",
@@ -905,8 +914,8 @@ class ReignsGame {
                     right: "팀원으로 참여"
                 },
                 effects: {
-                    left: { ability: 8, confidence: 5, mental: -8 },
-                    right: { ability: 5, mental: -3 }
+                    left: { ability: 4, confidence: 5, mental: -4, health: -2 },
+                    right: { ability: 2, mental: -2 }
                 },
                 resultMessages: {
                     left: "프로젝트를 이끌며 리더십과 책임감을 기릅니다.",
@@ -923,8 +932,8 @@ class ReignsGame {
                     right: "기초 서적 읽기"
                 },
                 effects: {
-                    left: { ability: 6, mental: -5 },
-                    right: { ability: 3, mental: 2 }
+                    left: { ability: 2, mental: -2 },
+                    right: { ability: 1, mental: 1 }
                 },
                 resultMessages: {
                     left: "깊이 있는 지식을 탐구하며 전문성을 높입니다.",
@@ -937,18 +946,126 @@ class ReignsGame {
                 image: "images/korea.jpg",
                 prob: 0.5,
                 choices: {
-                    left: "여행을 간다.",
-                    right: "집에 머문다."
+                    left: "여행 가기",
+                    right: "집에 머물기"
                 },
                 effects: {
-                    left: { mental: 8, health: 5, finance: -8 },
-                    right: { mental: 3 }
+                    left: { mental: 7, health: 3, finance: -5 },
+                    right: { mental: 2 }
                 },
                 resultMessages: {
                     left: "새로운 풍경을 보며 스트레스를 풀고 활력을 얻습니다.",
                     right: "집에서 편안하게 휴식을 취하며 에너지를 충전합니다."
                 }
-            }
+            },
+            {
+                title: "예상치 못한 칭찬",
+                description: "코딩한 결과물을 보고 가족이 칭찬해줍니다.\n어떻게 하시겠습니까?",
+                image: "images/compliment.jpg",
+                prob: 0.5,
+                choices: {
+                    left: "겸손하게 받는다",
+                    right: "자랑한다"
+                },
+                effects: {
+                    left: { mental: 3 },
+                    right: { confidence: 3 }
+                },
+                resultMessages: {
+                    left: "따뜻한 위로를 받았습니다.",
+                    right: "자신감이 크게 올라갔습니다."
+                }
+            },
+            {
+                title: "낮잠 유혹",
+                description: "점심을 먹고 졸음이 쏟아집니다.\n어떻게 하시겠습니까?",
+                image: "images/sleepy.jpg",
+                prob: 0.7,
+                choices: {
+                    left: "잠깐 잔다.",
+                    right: "참고 공부한다."
+                },
+                effects: {
+                    left: { health: 2, mental: 2 },
+                    right: { ability: 1, health: -1, mental: -1 }
+                },
+                resultMessages: {
+                    left: "개운하게 깨어났습니다.",
+                    right: "졸음에 시달렸지만 공부를 이어갔습니다."
+                }
+            },
+            {
+                title: "집중력 저하",
+                description: "집이 답답해 근처 카페에서 공부할까 고민됩니다.\n어떻게 하시겠습니까?",
+                image: "images/trouble_focusing.jpg",
+                prob: 0.7,
+                choices: {
+                    left: "카페로 간다.",
+                    right: "집에 남는다."
+                },
+                effects: {
+                    left: { ability: 2, mental: 2, finance: -2 },
+                    right: { ability: 1, mental: -1 }
+                },
+                resultMessages: {
+                    left: "새로운 분위기에서 집중력이 향상되었습니다.",
+                    right: "정신을 차리고 공부를 이어갔습니다."
+                }
+            },
+            {
+                title: "게임취업밤 디스코드 강의",
+                description: "게임취업밤 디스코드 강의가 있습니다.\n어떻게 하시겠습니까?",
+                image: "images/discord.jpg",
+                prob: 2.0,
+                choices: {
+                    left: "강의를 청취한다.",
+                    right: "혼자서 공부한다."
+                },
+                effects: {
+                    left: { ability: 3 },
+                    right: { ability: -1 }
+                },
+                resultMessages: {
+                    left: "유익한 내용이 많아 역량이 크게 상승했습니다.",
+                    right: "혼자 공부를 했지만 크게 효과가 있지는 않았습니다."
+                }
+            },
+            {
+                title: "서점 신간 발견",
+                description: "개발 관련 신간이 눈에 띕니다.\n어떻게 하시겠습니까?",
+                image: "images/bookstore.jpg",
+                prob: 2.0,
+                choices: {
+                    left: "구매한다.",
+                    right: "외면한다."
+                },
+                effects: {
+                    left: { ability: 2, finance: -2 },
+                    right: { mental: -1 }
+                },
+                resultMessages: {
+                    left: "책에서 좋은 정보를 얻었습니다.",
+                    right: "지출을 줄였지만 눈에 자꾸 아른거립니다."
+                }
+            },
+            {
+                title: "비상금 발견",
+                description: "책상 서랍에서 잊고 있던 돈을 발견했습니다.\n어떻게 하시겠습니까?",
+                image: "images/emergency_fund.jpg",
+                prob: 2.0,
+                choices: {
+                    left: "간식을 사먹는다.",
+                    right: "저축을 한다."
+                },
+                effects: {
+                    left: { mental: 2 },
+                    right: { mental: -1, finance: 2 }
+                },
+                resultMessages: {
+                    left: "맛있는 간식으로 기분이 좋아졌습니다.",
+                    right: "통장에 소소한 여유가 생겼습니다."
+                }
+            },
         ];
         
         let availableEvents = events.filter(event => !this.recentEvents.includes(event.title));
@@ -959,7 +1076,7 @@ class ReignsGame {
         
         this.currentEvent = this.selectEventByProbability(availableEvents);
         this.recentEvents.push(this.currentEvent.title);
-        if (this.recentEvents.length > 3) this.recentEvents.shift();
+        if (this.recentEvents.length > 10) this.recentEvents.shift();
         
         this.cardImage.src = this.currentEvent.image || '';
         this.cardImage.style.display = this.currentEvent.image ? 'block' : 'none';
@@ -997,8 +1114,8 @@ class ReignsGame {
                     right: "지원 안한다"
                 },
                 effects: {
-                    left: { confidence: 5, mental: 5 },
-                    right: { mental: -5, confidence: -5 }
+                    left: {  },
+                    right: {  }
                 }
             },
             {
@@ -1113,13 +1230,7 @@ class ReignsGame {
         this.resultTitle.textContent = `${stepNames[this.endingQuestStep]} ${success ? '성공' : '실패'}`;
         this.resultMessage.textContent = stepMessages[this.endingQuestStep][success ? 'success' : 'failure'];
         
-        const finalEffects = { ...randomizedEffects };
-        if (!success) {
-            finalEffects.mental = (finalEffects.mental || 0) - 10;
-            finalEffects.confidence = (finalEffects.confidence || 0) - 10;
-        }
-        
-        this.showResultStats(finalEffects);
+        this.showResultStats(randomizedEffects);
         this.confirmButton.onclick = () => this.confirmEndingQuestStepResult(success);
     }
     
