@@ -319,8 +319,7 @@ class ReignsGame {
         const hintElement = direction === 'left' ? this.leftHint : this.rightHint;
         const sortedStats = Object.entries(effects)
             .filter(([stat, value]) => Math.abs(value) > 0)
-            .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
-            .slice(0, 3);
+            .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
         
         if (sortedStats.length === 0) {
             hintElement.textContent = this.currentEvent.choices[direction];
@@ -521,7 +520,7 @@ class ReignsGame {
                 3: `${recruitmentType} 취업시장에서 1차 면접 탈락...<br>다음 기회를 노려보세요!`,
                 4: `${recruitmentType} 취업시장에서 2차 면접 탈락...<br>더 나은 준비를 해보세요!`
             };
-            this.gameStatus.textContent = failureMessages[firstFailure.step];
+            this.gameStatus.innerHTML = failureMessages[firstFailure.step];
         } else {
             // This case should not happen if we are in handleEndingQuestFailure
             this.gameStatus.textContent = "일상으로 돌아갑니다.";
@@ -566,7 +565,7 @@ class ReignsGame {
             }, 500);
         }
         
-        this.turnCount.textContent = `${this.age}살 (${this.week}주차)`;
+        this.turnCount.innerHTML = `${this.age}살<br>(${this.week}주차)`;
         this.updateScheduleBar();
     }
     
@@ -581,7 +580,7 @@ class ReignsGame {
                 this.updateStatColor(stat, value);
             }
         }
-        this.turnCount.textContent = `${this.age}살 (${this.week}주차)`;
+        this.turnCount.innerHTML = `${this.age}살<br>(${this.week}주차)`;
         this.updateScheduleBar();
     }
 
@@ -882,7 +881,7 @@ class ReignsGame {
                 title: "운동 시간",
                 description: "체력을 기르기 위한 운동을 할 수 있습니다.\n어떻게 하시겠습니까?",
                 image: "images/health.jpg",
-                prob: 1,
+                prob: 2,
                 choices: {
                     left: "격렬한 운동",
                     right: "가벼운 운동"
@@ -1165,7 +1164,7 @@ class ReignsGame {
                     left: "엄청난 집중력으로 버그를 잡아냈습니다! 위기 대처 능력을 증명했지만 체력 및 정신적으로 녹초가 되었습니다.",
                     right: "진솔한 태도를 좋게 평가받았습니다. 기술적인 아쉬움은 남았지만, 신뢰를 얻었습니다."
                 }
-            }
+            },
             {
                 title: "개발자 블로그 작성",
                 description: "공부한 내용을 정리하고 공유하기 위해 기술 블로그를 작성할까 고민됩니다.\n어떻게 하시겠습니까?",
@@ -1182,6 +1181,78 @@ class ReignsGame {
                 resultMessages: {
                     left: "글을 쓰는 것은 생각보다 힘든 일이었지만, 지식이 완벽히 내 것이 되는 기분입니다.",
                     right: "블로그보다는 코딩에 집중하여, 안정적으로 역량을 향상시켰습니다."
+                }
+            },
+            {
+                title: "내 아이디어가 이미 존재한다니",
+                description: "혁신적이라고 생각했던 나만의 게임 아이디어가 이미 다른 게임으로 출시된 것을 발견했습니다.\n어떻게 하시겠습니까?",
+                image: "images/embarrassment.jpg",
+                prob: 0.3,
+                choices: {
+                    left: "내 아이디어에 차별점을 더해 발전시킨다.",
+                    right: "아이디어를 폐기하고 새로 구상한다."
+                },
+                effects: {
+                    left: { ability: 4, mental: -2, health: -2 },
+                    right: { ability: -2, mental: -2 }
+                },
+                resultMessages: {
+                    left: "좌절하지 않고 기존 아이디어를 뛰어넘기 위해 노력했습니다. 역량이 크게 향상되었습니다.",
+                    right: "허탈함에 모든 것을 처음부터 다시 시작해야 합니다. 시간과 정신적 타격이 큽니다."
+                }
+            },
+            {
+                title: "올라버린 월세",
+                description: "집주인에게서 다음 달부터 월세를 올리겠다는 통보를 받았습니다.\n어떻게 하시겠습니까?",
+                image: "images/rent_increase.jpg",
+                prob: 0.3,
+                choices: {
+                    left: "생활비를 극단적으로 줄인다.",
+                    right: "단기 아르바이트를 알아본다."
+                },
+                effects: {
+                    left: { finance: -1, mental: -2, health: -1 },
+                    right: { ability: -3, finance: +6, mental: +2 }
+                },
+                resultMessages: {
+                    left: "허리띠를 졸라맸습니다. 돈은 아꼈지만, 삶의 질이 떨어져 스트레스가 극심합니다.",
+                    right: "급한 불은 껐지만, 공부할 시간이 줄어들어 초조한 마음이 더욱 커졌습니다."
+                }
+            },
+            {
+                title: "이거 하나만 만들어 줘",
+                description: "개발자가 아닌 친구가 '너는 전문가니까 쉽지?'라며 자신의 사업에 필요한 앱/웹을 거의 무료로 만들어달라고 부탁합니다.\n어떻게 하시겠습니까?",
+                image: "images/friend_request.jpg",
+                prob: 0.5,
+                choices: {
+                    left: "우정을 위해 도와준다.",
+                    right: "정당한 대가를 요구하거나 거절한다."
+                },
+                effects: {
+                    left: { ability: -10, finance: +2, mental: -2 },
+                    right: { confidence: +2, mental: +2 }
+                },
+                resultMessages: {
+                    left: "내 소중한 시간과 노력을 쏟아부었지만, 남은 것은 피로뿐입니다. 취업 준비에 큰 차질이 생겼습니다.",
+                    right: "나의 가치를 스스로 지켰습니다. 불편한 관계가 될 수도 있지만, 장기적으로는 현명한 선택입니다."
+                }
+            },
+            {
+                title: "신입(경력 5년) 채용 공고",
+                description: "신입 개발자를 뽑는 공고인데, 자격 요건에는 '관련 경력 5년 이상'이라는 어이없는 내용이 적혀 있습니다.\n어떻게 하시겠습니까?",
+                image: "images/embarrassment.jpg",
+                prob: 0.5,
+                choices: {
+                    left: "황당해하며 커뮤니티에 공유한다.",
+                    right: "조용히 창을 닫는다."
+                },
+                effects: {
+                    left: { mental: 4 },
+                    right: { mental: -2 }
+                },
+                resultMessages: {
+                    left: "다른 사람들과 웃고 떠들며 스트레스를 풀었습니다. 나만 힘든 게 아니었습니다.",
+                    right: "씁쓸한 업계의 현실을 또 한 번 마주했습니다. 정신력이 하락했습니다."
                 }
             },
         ];
@@ -1246,7 +1317,7 @@ class ReignsGame {
                     right: "무리하지 않는다."
                 },
                 effects: {
-                    left: { ability: 5, health: -5 },
+                    left: { ability: 2, health: -2 },
                     right: { mental: 2 }
                 }
             },
@@ -1260,7 +1331,7 @@ class ReignsGame {
                     right: "무리하지 않는다."
                 },
                 effects: {
-                    left: { ability: 5, health: -5 },
+                    left: { ability: 2, health: -2 },
                     right: { mental: 2 }
                 }
             },
@@ -1274,7 +1345,7 @@ class ReignsGame {
                     right: "무리하지 않는다."
                 },
                 effects: {
-                    left: { ability: 5, health: -5 },
+                    left: { ability: 2, health: -2 },
                     right: { mental: 2 }
                 }
             }
