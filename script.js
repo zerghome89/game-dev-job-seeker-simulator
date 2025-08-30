@@ -432,13 +432,42 @@ class ReignsGame {
     }
     
     checkEndingQuestSuccess(choice) {
+        // 최종 면접 통과 조건
+        if ([2, 3, 4].includes(this.endingQuestStep)) {
+            if (this.stats.ability >= 90 && this.stats.confidence >= 30 && this.stats.mental >= 30) {
+                return true;
+            }
+        }
+        
         const abilityRatio = this.stats.ability / 100;
         const baseSuccessRate = abilityRatio * 0.8;
+
+        let finalSuccessRate = baseSuccessRate;
+
+        if ([2, 3, 4].includes(this.endingQuestStep)) {
+            const calculateSuccessPenalty = (statValue) => {
+                if (statValue >= 30) {
+                    return 0;
+                }
+                if (statValue >= 15) {
+                    // Linear penalty from 0.15 to 0 for stat values from 15 to 30
+                    return (30 - statValue) * (0.15 / 15); // which is (30 - statValue) * 0.01
+                }
+                // Linear penalty from 0.3 to 0.15 for stat values from 0 to 15
+                return 0.15 + (15 - statValue) * (0.15 / 15); // which is 0.15 + (15 - statValue) * 0.01
+            };
+
+            const mentalPenalty = calculateSuccessPenalty(this.stats.mental);
+            const confidencePenalty = calculateSuccessPenalty(this.stats.confidence);
+            
+            finalSuccessRate = baseSuccessRate - mentalPenalty - confidencePenalty;
+        }
+
         const successConditions = {
             1: choice === 'left',
-            2: Math.random() < baseSuccessRate,
-            3: Math.random() < baseSuccessRate,
-            4: Math.random() < baseSuccessRate
+            2: Math.random() < finalSuccessRate,
+            3: Math.random() < finalSuccessRate,
+            4: Math.random() < finalSuccessRate
         };
         return successConditions[this.endingQuestStep] || false;
     }
@@ -459,7 +488,7 @@ class ReignsGame {
         
         const failedSteps = this.endingQuestResults.filter(result => !result.success).length;
         this.resultTitle.textContent = '최종 탈락';
-        this.resultMessage.textContent = `${failedSteps}개 단계에서 탈락하여\n최종 합격에 실패했습니다.\n하지만 포기하지 마세요!`;
+        this.resultMessage.textContent = `${failedSteps}개 단계에서 탈락하여\n최종 합격에 실패했습니다.<br>하지만 포기하지 마세요!`;
         if (this.resultImage) {
             this.resultImage.src = 'images/failure_step.jpg';
             this.resultImage.style.display = 'block';
@@ -488,9 +517,9 @@ class ReignsGame {
         if (firstFailure) {
             const failureMessages = {
                 1: `${recruitmentType} 취업시장에 지원하지 않았습니다.`,
-                2: `${recruitmentType} 취업시장에서 서류 탈락... 하지만 포기하지 마세요!`,
-                3: `${recruitmentType} 취업시장에서 1차 면접 탈락... 다음 기회를 노려보세요!`,
-                4: `${recruitmentType} 취업시장에서 2차 면접 탈락... 더 나은 준비를 해보세요!`
+                2: `${recruitmentType} 취업시장에서 서류 탈락...<br>하지만 포기하지 마세요!`,
+                3: `${recruitmentType} 취업시장에서 1차 면접 탈락...<br>다음 기회를 노려보세요!`,
+                4: `${recruitmentType} 취업시장에서 2차 면접 탈락...<br>더 나은 준비를 해보세요!`
             };
             this.gameStatus.textContent = failureMessages[firstFailure.step];
         } else {
@@ -613,8 +642,7 @@ class ReignsGame {
         this.endingQuestStep = 1;
         this.endingQuestResults = [];
         const recruitmentType = this.week < 44 ? "상반기" : "하반기";
-        const successRate = Math.round((this.stats.ability / 100) * 80);
-        this.gameStatus.textContent = `${recruitmentType} 취업시장 시작! (매 단계 성공 확률 약 ${successRate}%)`;
+        this.gameStatus.innerHTML = `${recruitmentType} 취업시장 시작!<br><small>'역량'이 중요하며, '정신력', '자신감'이 낮으면 페널티가 있습니다.</small>`;
         this.loadEndingQuestEvent();
     }
     
@@ -764,7 +792,7 @@ class ReignsGame {
                 title: "온라인 강의",
                 description: "게임 개발 온라인 강의를 들을 기회가 있습니다.\n어떻게 하시겠습니까?",
                 image: "images/online.jpg",
-                prob: 2,
+                prob: 1,
                 choices: {
                     left: "고급 강의를 수강한다.",
                     right: "무료 강의를 수강한다."
@@ -836,7 +864,7 @@ class ReignsGame {
                 title: "게임취업밤 게임잼 참가",
                 description: "게임잼에 참가하여 실력을 키울 수 있습니다.\n어떻게 하시겠습니까?",
                 image: "images/portfolio.jpg",
-                prob: 0.5,
+                prob: 1,
                 choices: {
                     left: "팀으로 참가한다.",
                     right: "개인으로 참가한다."
@@ -908,7 +936,7 @@ class ReignsGame {
                 title: "팀 프로젝트",
                 description: "팀 프로젝트에 참여할 기회가 있습니다.\n어떻게 하시겠습니까?",
                 image: "images/team_project.jpg",
-                prob: 1,
+                prob: 0.8,
                 choices: {
                     left: "팀장으로 참여",
                     right: "팀원으로 참여"
@@ -980,7 +1008,7 @@ class ReignsGame {
                 title: "낮잠 유혹",
                 description: "점심을 먹고 졸음이 쏟아집니다.\n어떻게 하시겠습니까?",
                 image: "images/sleepy.jpg",
-                prob: 0.7,
+                prob: 1,
                 choices: {
                     left: "잠깐 잔다.",
                     right: "참고 공부한다."
@@ -998,7 +1026,7 @@ class ReignsGame {
                 title: "집중력 저하",
                 description: "집이 답답해 근처 카페에서 공부할까 고민됩니다.\n어떻게 하시겠습니까?",
                 image: "images/trouble_focusing.jpg",
-                prob: 0.7,
+                prob: 1,
                 choices: {
                     left: "카페로 간다.",
                     right: "집에 남는다."
@@ -1016,7 +1044,7 @@ class ReignsGame {
                 title: "게임취업밤 디스코드 강의",
                 description: "게임취업밤 디스코드 강의가 있습니다.\n어떻게 하시겠습니까?",
                 image: "images/discord.jpg",
-                prob: 2.0,
+                prob: 1,
                 choices: {
                     left: "강의를 청취한다.",
                     right: "혼자서 공부한다."
@@ -1034,7 +1062,7 @@ class ReignsGame {
                 title: "서점 신간 발견",
                 description: "개발 관련 신간이 눈에 띕니다.\n어떻게 하시겠습니까?",
                 image: "images/bookstore.jpg",
-                prob: 2.0,
+                prob: 1,
                 choices: {
                     left: "구매한다.",
                     right: "외면한다."
@@ -1052,7 +1080,7 @@ class ReignsGame {
                 title: "비상금 발견",
                 description: "책상 서랍에서 잊고 있던 돈을 발견했습니다.\n어떻게 하시겠습니까?",
                 image: "images/emergency_fund.jpg",
-                prob: 2.0,
+                prob: 1,
                 choices: {
                     left: "간식을 사먹는다.",
                     right: "저축을 한다."
