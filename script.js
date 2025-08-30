@@ -1094,6 +1094,96 @@ class ReignsGame {
                     right: "통장에 소소한 여유가 생겼습니다."
                 }
             },
+            {
+                title: "합격한 친구의 소식",
+                description: "같이 준비하던 친구가 먼저 좋은 회사에 합격했다는 소식을 전해왔습니다.\n어떻게 하시겠습니까?",
+                image: "images/friend_success.jpg",
+                prob: 1,
+                choices: {
+                    left: "진심으로 축하해준다.",
+                    right: "부러운 마음에 거리를 둔다."
+                },
+                effects: {
+                    left: { mental: 2, confidence: -2 },
+                    right: { mental: -2 }
+                },
+                resultMessages: {
+                    left: "친구를 축하해주니 마음은 편해졌지만, 한편으로 드는 초조함은 어쩔 수 없습니다.",
+                    right: "비교하는 마음이 나를 더 힘들게 합니다. 정신력이 크게 하락했습니다."
+                }
+            },
+            {
+                title: "창의력 고갈",
+                description: "새로운 아이디어를 내야 하는데, 아무 생각도 떠오르지 않습니다.\n어떻게 하시겠습니까?",
+                image: "images/trouble_focusing.jpg",
+                prob: 1,
+                choices: {
+                    left: "좋아하는 게임을 플레이한다.",
+                    right: "다른 사람의 작품을 참고한다."
+                },
+                effects: {
+                    left: { mental: 3, health: -2, ability: 1 },
+                    right: { ability: 2, mental: -3 }
+                },
+                resultMessages: {
+                    left: "즐겁게 게임을 하며 새로운 영감을 얻었습니다! 하지만 눈은 조금 피곤합니다.",
+                    right: "다양한 레퍼런스를 찾아보며 시야를 넓혔지만, 독창성에 대한 고민이 깊어졌습니다."
+                }
+            },
+            {
+                title: "예상치 못한 용돈",
+                description: "부모님께서 고생한다며 예상치 못한 용돈을 주셨습니다.\n어떻게 하시겠습니까?",
+                image: "images/pocket_money.jpg",
+                prob: 0.5,
+                choices: {
+                    left: "감사히 받고 생활비에 보탠다.",
+                    right: "마음만 받겠다며 정중히 거절한다."
+                },
+                effects: {
+                    left: { finance: 4, mental: 1 },
+                    right: { confidence: 7, mental: -2 }
+                },
+                resultMessages: {
+                    left: "재정적 여유가 생기니 마음의 여유도 함께 찾아왔습니다.",
+                    right: "스스로의 힘으로 해내고 싶다는 마음을 보여드렸습니다. 자신감은 올랐지만, 현실적인 걱정이 앞섭니다."
+                }
+            },
+            {
+                title: "발표 직전 발견한 버그",
+                description: "포트폴리오 시연 면접을 하루 앞두고, 프로젝트에서 치명적인 버그를 발견했습니다.\n어떻게 하시겠습니까?",
+                image: "images/bug.jpg",
+                prob: 1,
+                choices: {
+                    left: "밤샘 작업을 통해 빠르게 수정한다.",
+                    right: "솔직하게 상황을 설명하고 양해를 구한다."
+                },
+                effects: {
+                    left: { ability: 2, mental: -2, health: -4 },
+                    right: { confidence: 4, ability: -2 }
+                },
+                resultMessages: {
+                    left: "엄청난 집중력으로 버그를 잡아냈습니다! 위기 대처 능력을 증명했지만 체력 및 정신적으로 녹초가 되었습니다.",
+                    right: "진솔한 태도를 좋게 평가받았습니다. 기술적인 아쉬움은 남았지만, 신뢰를 얻었습니다."
+                }
+            }
+            {
+                title: "개발자 블로그 작성",
+                description: "공부한 내용을 정리하고 공유하기 위해 기술 블로그를 작성할까 고민됩니다.\n어떻게 하시겠습니까?",
+                image: "images/blog.jpg",
+                prob: 1,
+                choices: {
+                    left: "꾸준히 기록한다.",
+                    right: "글 쓸 시간에 하나라도 더 공부한다."
+                },
+                effects: {
+                    left: { ability: 1, confidence: 2, mental: -2, health: -1 },
+                    right: { ability: 2 }
+                },
+                resultMessages: {
+                    left: "글을 쓰는 것은 생각보다 힘든 일이었지만, 지식이 완벽히 내 것이 되는 기분입니다.",
+                    right: "블로그보다는 코딩에 집중하여, 안정적으로 역량을 향상시켰습니다."
+                }
+            },
         ];
         
         let availableEvents = events.filter(event => !this.recentEvents.includes(event.title));
